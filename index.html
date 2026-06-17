@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Stixx</title>
+
+    <!-- Responsive + cover the notch -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, viewport-fit=cover">
+
+    <!-- Add-to-Home-Screen = fullscreen standalone app (iOS + Android) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="Stixx">
+    <meta name="theme-color" content="#000000">
+
+    <!-- Home-screen / browser-tab icon -->
+    <link rel="apple-touch-icon" href="icon.png">
+    <link rel="icon" type="image/png" href="icon.png">
+
+    <style>
+        /* --- АДАПТИВНІ ВИПРАВЛЕННЯ --- */
+        html, body {
+            width: 100%;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;            /* Прибирає скролбар */
+            position: fixed;             /* Блокує iOS rubber-band / pull-to-refresh */
+            overscroll-behavior: none;
+            touch-action: none;          /* Без зуму/скролу пальцем — це гра */
+            background-color: #000;      /* Чорний фон, щоб не сліпило при завантаженні */
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        #unity-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            left: 0;
+            top: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #unity-canvas {
+            width: 100%;
+            height: 100%;
+            /* Якщо хочеш зберегти пропорції і мати чорні смуги, розкоментуй це:
+               width: auto; height: auto; max-width: 100%; max-height: 100%; aspect-ratio: 16/9; 
+            */
+            width: auto; height: auto; max-width: 100%; max-height: 100%; aspect-ratio: 9/16;
+        }
+
+        /* Простий лоадер */
+        #loading-cover {
+            position: absolute;
+            top: 0; left: 0; width: 100%; height: 100%;
+            background: black;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            color: white;
+            font-family: sans-serif;
+            z-index: 99;
+        }
+    </style>
+</head>
+<body>
+<div id="unity-container">
+    <canvas id="unity-canvas" tabindex="-1"></canvas>
+    <div id="loading-cover">Loading...</div>
+</div>
+
+<script>
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingCover = document.querySelector("#loading-cover");
+
+    // Unity змінні, які автоматично заміняться при білді
+    var buildUrl = "Build";
+    var loaderUrl = buildUrl + "/StixxWeb.loader.js";
+    var config = {
+        dataUrl: buildUrl + "/StixxWeb.data",
+        frameworkUrl: buildUrl + "/StixxWeb.framework.js",
+        codeUrl: buildUrl + "/StixxWeb.wasm",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "MWB",
+        productName: "Stixx",
+        productVersion: "0.1.3",
+    };
+
+    // --- FIX ДЛЯ RETINA ДИСПЛЕЇВ (MacBook) ---
+    // Обмежуємо pixelRatio, щоб не вбивати продуктивність
+    var dpr = window.devicePixelRatio || 1;
+    config.devicePixelRatio = Math.min(dpr, 2.0);
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+            // Тут можна оновлювати прогрес бар
+        }).then((unityInstance) => {
+            loadingCover.style.display = "none";
+        }).catch((message) => {
+            alert(message);
+        });
+    };
+    document.body.appendChild(script);
+</script>
+</body>
+</html>
