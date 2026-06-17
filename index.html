@@ -25,10 +25,8 @@
             margin: 0;
             padding: 0;
             position: fixed;             /* Блокує iOS rubber-band / pull-to-refresh */
-            inset: 0;
-            width: 100%;
-            height: 100vh;
-            height: 100dvh;              /* iOS: тягнеться під home-indicator (до краю) */
+            inset: 0;                    /* Розмір задають краї, БЕЗ явної height
+                                            (явна 100dvh у standalone обрізала низ) */
             overflow: hidden;            /* Прибирає скролбар */
             overscroll-behavior: none;
             touch-action: none;          /* Без зуму/скролу пальцем — це гра */
