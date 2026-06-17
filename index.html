@@ -22,12 +22,14 @@
     <style>
         /* --- АДАПТИВНІ ВИПРАВЛЕННЯ --- */
         html, body {
-            width: 100%;
-            height: 100%;
             margin: 0;
             padding: 0;
-            overflow: hidden;            /* Прибирає скролбар */
             position: fixed;             /* Блокує iOS rubber-band / pull-to-refresh */
+            inset: 0;
+            width: 100%;
+            height: 100vh;
+            height: 100dvh;              /* iOS: тягнеться під home-indicator (до краю) */
+            overflow: hidden;            /* Прибирає скролбар */
             overscroll-behavior: none;
             touch-action: none;          /* Без зуму/скролу пальцем — це гра */
             background-color: #000;      /* Чорний фон, щоб не сліпило при завантаженні */
@@ -35,7 +37,7 @@
         }
 
         #unity-container {
-            position: absolute;
+            position: fixed;             /* пін до країв екрана (включно з низом) */
             inset: 0;
             display: flex;
             align-items: center;
